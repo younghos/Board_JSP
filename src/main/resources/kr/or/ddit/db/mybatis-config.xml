@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties resource="kr/or/ddit/db/db.properties" />
+	<!-- mapper의 alias 설정 -->
+	<typeAliases>
+		<typeAlias type="kr.or.ddit.user.model.UserVo" alias="userVo"/>
+		<typeAlias type="kr.or.ddit.board.model.BoardVo" alias="boardVo"/>
+		<typeAlias type="kr.or.ddit.util.model.PageVo" alias="pageVo"/>
+		<typeAlias type="kr.or.ddit.notice.model.NoticeVo" alias="noticeVo"/>
+		<typeAlias type="kr.or.ddit.comment.model.CommentVo" alias="ctVo"/>
+		<typeAlias type="kr.or.ddit.attachment.model.AttachmentVo" alias="atVo"/>
+	</typeAliases>
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED"> 
+				<property name="driver" value="${db.driver}" />
+				<property name="url" value="${db.url}" />
+				<property name="username" value="${db.username}" />
+				<property name="password" value="${db.password}" />
+			</dataSource>
+<!-- 			<dataSource type="JNDI"> connection pool -->
+<!-- 				<property name="data_source" value="java:comp/env/jdbc/oracleDB" /> -->
+<!-- 			</dataSource> -->
+		</environment>
+	</environments>
+	<mappers>
+		<mapper resource="kr/or/ddit/db/user.xml" />
+		<mapper resource="kr/or/ddit/db/board.xml" />
+		<mapper resource="kr/or/ddit/db/notice.xml" />
+		<mapper resource="kr/or/ddit/db/comment.xml" />
+		<mapper resource="kr/or/ddit/db/attachment.xml" />
+	</mappers>
+</configuration>

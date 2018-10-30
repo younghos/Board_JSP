@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="attachment">
+	<insert id="fileUpload" parameterType="Map">
+		insert into attachment
+		(file_no, file_notice, file_name, file_chk, file_path) values
+		('f' || LPAD(file_no_seq.nextval,3,'0'), #{file_notice}, #{file_name}, 0, #{file_path})
+	</insert>
+	<select id="filefind" parameterType="String" resultType="atVo">
+		select /*+index (IDX_ATTACHMENT_01)*/ * 
+		from attachment
+		where file_notice = #{notice_no} and file_chk = 0
+	</select>
+	
+</mapper>

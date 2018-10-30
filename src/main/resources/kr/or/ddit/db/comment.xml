@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="comment">
+	<select id="noticeComment" parameterType="String" resultType="ctVo">
+		select /*+ (index IDX_CT_01)*/ *
+		from ct
+		where ct_notice = #{ct_notice}
+	</select>
+	
+	<insert id="commentInsert" parameterType="Map">
+		insert into ct
+		(ct_id, ct_notice, ct_user, ct_content, ct_date, ct_chk) values
+		('c' || LPAD(ct_no_seq.nextval,3,'0'), #{ct_notice}, #{ct_user}, #{ct_content}, SYSDATE, 0)
+	</insert>
+	
+	<update id="">
+		
+	</update>
+	
+	<update id="commentDelete">
+		update ct
+		set ct_chk = 1, ct_content = '삭제된 댓글입니다.'
+		where ct_id = #{ct_id}
+	</update>
+</mapper>

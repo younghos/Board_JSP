@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="notice">
+	<select id="boardFreePagingList" parameterType="Map" resultType="noticeVo">
+		select *
+		from(
+		    select rownum as rnum, a.*
+		    from
+		    (
+		        select notice_no
+		             , LPAD('　▶　', (level-1)*4, '　　') || notice_name as notice_name
+		             , notice_pno
+		             , notice_user
+		             , notice_content
+		             , notice_date
+		             , notice_chk
+		             , notice_seq
+		        from notice
+		        where notice_board = #{notice_board}
+		        start with notice_pno is null
+		        connect by prior notice_no = notice_pno
+		        order siblings by notice_seq desc, notice_date asc
+		    ) a
+		)
+		where rnum between #{pageVo.page}*#{pageVo.pageSize}-(#{pageVo.pageSize}-1) and #{pageVo.page}*#{pageVo.pageSize}
+	</select>
+	<select id="getNoticeCnt" parameterType="String" resultType="int">
+		select count(*) from notice where notice_board=#{notice_board}
+	</select>
+	<insert id="noticeInsert" parameterType="Map">
+		insert into notice 
+		(notice_no, notice_board, notice_user, notice_name, notice_content, notice_chk, notice_date, notice_seq)
+		values('n' || LPAD(notice_no_seq.nextval,3,'0'), #{notice_board}, #{notice_user}, #{notice_name}, #{notice_content}, 0, SYSDATE, notice_s.nextval)
+	</insert>
+	<select id="getNoticeDetail" parameterType="String" resultType="noticeVo">
+		select * from notice where notice_no = #{notice_no}
+	</select>
+	
+	<update id="noticeUpdate" parameterType="Map">
+		update notice 
+		set notice_name = #{notice_name}, notice_content = #{notice_content}
+		where notice_no = #{notice_no}
+	</update>
+	
+	<update id="noticeDelete" parameterType="Map">
+		update notice
+		set notice_chk = 1, notice_name = '삭제된 게시글입니다.'
+		where notice_no = #{notice_no}
+	</update>
+	
+	<insert id="replyInsert" parameterType="Map">
+		insert into notice
+		(notice_no, notice_board, notice_user, notice_name, notice_content, notice_pno, notice_chk, notice_date)
+		values('n' || LPAD(notice_no_seq.nextval,3,'0'), #{notice_board}, #{notice_user}, #{notice_name}, #{notice_content}, #{notice_pno}, 0, sysdate)
+	</insert>
+	
+	<select id="maxNotice" resultType="String">
+		select Max(notice_no) from notice
+	</select>
+</mapper>
